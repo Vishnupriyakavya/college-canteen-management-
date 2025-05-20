@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+
+{% block start %}
+    <div class="container-fluid p-0">
+        <!-- Hero Section -->
+        
+            <h1 class="display-4">Welcome to KHIT Canteen</h1>
+            <p class="lead">Delicious food, made with love!</p>
+        
+        </div>
+
+        <!-- Menu Items Section -->
+        <div class="container mt-5">
+            <div class="row">
+                {% for food_items in menu %}
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow-lg">
+                        <img src="/media/{{food_items.images}}" class="card-img-top" alt="Food Item" style="height: 180px; object-fit: cover;">
+                        <div class="card-body text-center">
+
+                            <h5 class="card-title font-weight-bold text-primary">{{ food_items.item_name }}</h5>
+                            <p class="text-muted">Price: ₹{{ food_items.price }}</p>
+                            <a href="{% url 'add_cart' food_items.uid %}" class="btn btn-success btn-sm">
+                                Add to Cart <i class="fa-solid fa-cart-shopping"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

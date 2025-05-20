@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f9fafc;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .orders-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .order-card {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+            padding: 20px;
+            margin-bottom: 25px;
+            transition: transform 0.2s ease;
+        }
+
+        .order-card:hover {
+            transform: scale(1.01);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .order-items {
+            padding-left: 20px;
+        }
+
+        .order-items li {
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 10%;
+            color: #003366;
+        }
+
+        .back-btn {
+              position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    border-radius: 5px;
+        }
+
+        .order-total {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #2a5d2a;
+        }
+    </style>
+</head>
+<body>
+    <div class="orders-container">
+        <h2>Your Orders</h2>
+  
+        <a href="{% url 'index' %}" class="btn btn-primary back-btn">Back to Home</a>
+
+        {% if orders %}
+            {% for order in orders %}
+                <div class="order-card">
+                    <div class="order-header">
+                        <div><strong>Order ID:</strong> {{ order.uid }}</div>
+                        <div><strong>Status:</strong> {{ order.status|title }}</div>
+                    </div>
+                    <p><strong>Ordered On:</strong> {{ order.created_at }}</p>
+                    <p><strong>Items:</strong></p>
+                    <ul class="order-items">
+                        {% for item in order.Cart_item.all %}
+                            <li>{{ item.food_items.item_name }} – Qty: {{ item.quantity }} – ₹{{ item.get_total_price }}</li>
+                        {% endfor %}
+                    </ul>
+                    <p class="order-total"><strong>Total:</strong> ₹{{ order.get_cart_total }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center text-muted">You have no orders yet.</p>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

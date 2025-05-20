@@ -1,0 +1,224 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from home.models import *
+from django.contrib.auth.models import User 
+from django.contrib.auth import login, authenticate   
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from django.contrib import messages
+from django.http import JsonResponse
+from django.db.models import Max
+
+# Create your views here.
+
+def index(request):
+    return render(request, 'index.html')
+
+
+def home(request):
+    menu=item.objects.all()  # Fetches all items from the database
+    context={'menu':menu} # passes the list of items to the home
+    return render(request,'home.html',context)
+
+def login_page(request):
+    if request.method == 'POST':
+        try:
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+
+            # Check if user exists first
+            if not User.objects.filter(username=username).exists():
+                messages.warning(request, "User not found.")
+                return redirect('/login/')
+
+            # Authenticate the user correctly
+            user_obj = authenticate(request, username=username, password=password)
+
+            if user_obj is not None:
+                login(request, user_obj)
+                return redirect('/')
+
+            messages.error(request, "Wrong password.")
+            return redirect('/login/')
+        
+        except Exception as e:
+            messages.error(request, "Something went wrong.")
+            return redirect('/register/')
+    
+    return render(request, 'login.html', {}) 
+
+
+def register_page(request):
+    if request.method == 'POST':
+        try:
+            username=request.POST.get('username')
+            password=request.POST.get('password')
+            department = request.POST.get('department')
+            cabin_no = request.POST.get('cabin_no')
+            block_no = request.POST.get('block_no')
+            floor_no = request.POST.get('floor_no')
+            user_obj=User.objects.filter(username=username)
+            if user_obj.exists():
+                messages.error(request, "User name is taken.")
+                return redirect('/register/')
+            
+            user_obj=User.objects.create(username=username)
+            user_obj.set_password(password)
+            user_obj.save()
+            profile = Profile.objects.get(user=user_obj)
+            profile.department = department
+            profile.cabin_no = cabin_no
+            profile.floor_no = floor_no
+            profile.block_no = block_no
+            profile.save()
+            messages.success(request, "Account created successfully.")
+            return redirect('/login/')
+        except Exception as e:
+            messages.error(request, "Something went wrong.")
+            return redirect('/register/')
+    
+    return render(request,'register.html')
+
+
+
+@login_required(login_url='/login/')
+def add_cart(request, food_items_uid):
+    item_obj = item.objects.get(uid=food_items_uid)
+    cart, created = Cart.objects.get_or_create(user=request.user, is_paid=False)
+
+    # Check if the item already exists in cart
+    cart_item, item_created = CartItem.objects.get_or_create(
+        cart=cart,
+        food_items=item_obj
+    )
+    if not item_created:
+        cart_item.quantity += 1
+        cart_item.save()
+    
+    return redirect('cart')
+
+
+
+@login_required(login_url='/login/')
+def cart(request):
+    cart, created = Cart.objects.get_or_create(user=request.user, is_paid=False)
+    return render(request, 'cart.html', {'carts': cart})
+
+
+@login_required(login_url='/login/')
+def remove_cart_items(request, cart_item_uid):
+    try:
+        cart_item = CartItem.objects.get(uid=cart_item_uid)
+        if cart_item.quantity > 1:
+            cart_item.quantity -= 1
+            cart_item.save()
+        else:
+            cart_item.delete()  # Remove from cart if quantity is 1
+        return redirect('cart')
+    except Exception as e:
+        print(e)
+
+
+
+@login_required(login_url='/login/')
+def orders(request):
+    
+    orders= Cart.objects.filter(is_paid=True,user=request.user)
+    context={'orders':orders}
+    return render(request, 'orders.html',context)
+
+    
+@login_required
+def account_view(request):
+    return render(request, 'account.html', {'user': request.user})
+
+
+
+
+def logout_view(request):
+    if request.method == "POST":
+        logout(request)
+        messages.success(request, "You have been logged out.")
+        return redirect('index')  # Redirect to the login page after logout
+    return redirect('index')  # Redirect to the index page if not a POST request
+
+
+
+
+@login_required(login_url='/login/')
+def place_order(request):
+    try:
+        cart = Cart.objects.get(user=request.user, is_paid=False)
+        cart.is_paid = True
+        cart.status = 'pending'
+        cart.save()
+        messages.success(request, "Your order has been placed successfully!")
+        return redirect('orders')
+    except Cart.DoesNotExist:
+        messages.error(request, "No active cart found.")
+        return redirect('cart')
+
+
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required(login_url='/login/')
+def owner_dashboard(request):
+    orders = Cart.objects.filter(is_paid=True).order_by('-created_at')
+    context = {'orders': orders}
+    return render(request, 'owner_dashboard.html', context)
+
+
+@staff_member_required(login_url='/login/')
+def update_order_status(request, order_uid):
+    if request.method == 'POST':
+        try:
+            cart = Cart.objects.get(uid=order_uid)
+            new_status = request.POST.get('status')
+            if new_status in ['pending', 'completed']:
+                cart.status = new_status
+                cart.save()
+                messages.success(request, "Order status updated.")
+        except Cart.DoesNotExist:
+            messages.error(request, "Order not found.")
+    return redirect('owner_dashboard')
+
+def update_order_status(request, order_uid):
+    if request.method == "POST":
+        order = get_object_or_404(Cart, uid=order_uid)
+        status = request.POST.get("status")
+        if status in ["pending", "accepted", "completed"]:
+            order.status = status
+            order.save()
+            messages.success(request, "Order status updated.")
+        else:
+            messages.error(request, "Invalid status.")
+        return redirect('owner_dashboard')
+
+
+@login_required
+def profile_view(request):
+    profile = request.user.profile  # Assuming user has OneToOne Profile
+    return render(request, 'profile.html', {'profile': profile})
+
+
+
+@login_required
+def profile_edit(request):
+    profile = request.user.profile
+    if request.method == 'POST':
+        department = request.POST.get('department')
+        cabin_no = request.POST.get('cabin_no')
+        floor_no = request.POST.get('floor_no')
+        block_no = request.POST.get('block_no')
+
+        profile.department = department
+        profile.cabin_no = cabin_no
+        profile.floor_no = floor_no
+        profile.block_no = block_no
+        profile.save()
+
+        messages.success(request, 'Profile updated successfully.')
+        return redirect('profile')
+
+    return render(request, 'profile_edit.html', {'profile': profile})
+
+

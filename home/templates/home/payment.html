@@ -1,0 +1,45 @@
+<!--
+<h2>Payment Page</h2>
+<p>Total Amount: ₹{{ total }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Pay Now</button>
+</form>
+
+
+
+<h2>Confirm Payment</h2>
+<p>Total: ₹{{ total }}</p>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Pay ₹{{ total }}</button>
+</form>
+-->
+
+<h2>Confirm Payment</h2>
+
+<table border="1">
+    <tr>
+        <th>Item</th>
+        <th>Price</th>
+        <th>Qty</th>
+        <th>Total</th>
+    </tr>
+    {% for item in cart_items %}
+    <tr>
+        <td>{{ item.food_items.name }}</td>
+        <td>₹{{ item.food_items.price }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>₹{{ item.food_items.price|floatformat:2|add:item.quantity|floatformat:2 }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>Total Amount: ₹{{ total }}</h3>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Pay ₹{{ total }}</button>
+</form>

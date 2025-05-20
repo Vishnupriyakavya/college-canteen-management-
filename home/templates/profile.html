@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block start %}
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 rounded-4 border-0">
+        <h2 class="text-center text-primary mb-4">Your Profile</h2>
+
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{% url 'index' %}" class="btn btn-outline-secondary">🏠 Home</a>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <p style="color:black"><strong>👤 Username:</strong> {{ profile.user.username }}</p>
+            </div>
+            <div class="col-md-6">
+                <p style="color:black"><strong>🏢 Department:</strong> {{ profile.department }}</p>
+            </div>
+            <div class="col-md-6">
+                <p style="color:black"><strong>🪑 Cabin No:</strong> {{ profile.cabin_no }}</p>
+            </div>
+            <div class="col-md-6">
+                <p style="color:black"><strong>🏬 Floor No:</strong> {{ profile.floor_no }}</p>
+            </div>
+            <div class="col-md-6">
+                <p style="color:black"><strong>🏗️ Block No:</strong> {{ profile.block_no }}</p>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="{% url 'profile_edit' %}" class="btn btn-primary mt-3 px-4 py-2">✏️ Update Profile</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

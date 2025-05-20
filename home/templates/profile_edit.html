@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block start %}
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 rounded-4 border-0">
+        <h2 class="text-center text-info mb-4">Edit Profile</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label" style="color:black">🏢 Department:</label>
+                    <input type="text" name="department" value="{{ profile.department }}" class="form-control" placeholder="Enter department">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" style="color:black">🪑 Cabin No:</label>
+                    <input type="text" name="cabin_no" value="{{ profile.cabin_no }}" class="form-control" placeholder="Enter cabin number">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" style="color:black">🏬 Floor No:</label>
+                    <input type="text" name="floor_no" value="{{ profile.floor_no }}" class="form-control" placeholder="Enter floor number">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" style="color:black">🏗️ Block No:</label>
+                    <input type="text" name="block_no" value="{{ profile.block_no }}" class="form-control" placeholder="Enter block number">
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-success px-4 py-2 me-2">✅ Update</button>
+                <a href="{% url 'profile' %}" class="btn btn-secondary px-4 py-2">❌ Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

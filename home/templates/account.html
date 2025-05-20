@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block start %}
+<div class="container mt-5 col-md-6 card shadow-lg p-4 rounded">
+    <h2 class="text-center mb-4"> Account</h2>
+    
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Username</th>
+            <td>{{ user.username }}</td>
+        </tr>
+        
+        <tr>
+            <th>Department</th>
+            <td>{{ user.profile.department|default:"Not provided" }}</td>
+
+        </tr>
+        <tr>
+            <th>Cabin No</th>
+            <td>{{ user.profile.cabin_no }}</td>
+        </tr>
+        <tr>
+            <th>Block No</th>
+            <td>{{ user.profile.block_no }}</td>
+        </tr>
+        <tr>
+            <th>Floor No</th>
+            <td>{{ user.profile.floor_no }}</td>
+        </tr>
+    </table>
+
+    <form method="POST" action="{% url 'logout' %}" class="text-center mt-3">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Logout</button>
+    </form>
+    
+</div>
+{% endblock %}
