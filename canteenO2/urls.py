@@ -19,8 +19,9 @@ from django.urls import path,include
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from home.views import index, login_page,place_order, register_page, add_cart,owner_dashboard, update_order_status, cart, remove_cart_items, orders, home, account_view, logout_view,profile_view, profile_edit
+from home.views import index, login_page,place_order, register_page, add_cart,owner_dashboard, update_order_status, cart, remove_cart_items, orders, home, account_view, logout_view,profile_view, profile_edit,delete_item,add_item,edit_item,food_items
 from django.contrib.auth.views import LogoutView
+
 
 
 
@@ -44,6 +45,11 @@ urlpatterns = [
     path('update-order-status/<uuid:order_uid>/', update_order_status, name='update_order_status'),
     path('profile/', profile_view, name='profile'),
     path('profile/edit/', profile_edit, name='profile_edit'),
+    path('delete_item/<food_items_uid>/', delete_item, name='delete_item'),
+    path('add_item/', add_item, name='add_item'),
+    path('edit_item/<food_items_uid>/', edit_item, name='edit_item'),
+    path('food_items/', food_items, name='food_items')
+
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

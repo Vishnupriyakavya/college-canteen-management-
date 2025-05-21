@@ -8,6 +8,8 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.db.models import Max
 
+from .models import item, itemCategory
+from django.contrib.auth.decorators import login_required, user_passes_test
 # Create your views here.
 
 def index(request):
@@ -221,4 +223,54 @@ def profile_edit(request):
 
     return render(request, 'profile_edit.html', {'profile': profile})
 
+@staff_member_required(login_url='/login/')
+def add_item(request):
+    if request.method=='POST':
+        item_name = request.POST.get('item_name')
+        price = request.POST.get('price')
+        images= request.FILES.get('images')
+        
+        category= request.POST.get('category')
+        category_obj = itemCategory.objects.get(category_name=category)
+        item_obj = item.objects.create(item_name=item_name, price=price, images=images, category=category_obj)
+        item_obj.save()
+        messages.success(request, "Item added successfully.")
+        return redirect('owner_dashboard')
+    return render(request, 'add_item.html')
 
+
+
+@staff_member_required(login_url='/login/')
+def delete_item(request, food_items_uid):
+    try:
+        item_obj = item.objects.get(uid=food_items_uid)
+        item_obj.delete()
+        messages.success(request, "Item deleted successfully.")
+    except item.DoesNotExist:
+        messages.error(request, "Item not found.")
+    return redirect('owner_dashboard')
+
+
+@staff_member_required(login_url='/login/')
+def edit_item(request, food_items_uid):
+    item_obj = get_object_or_404(item, uid=food_items_uid)
+    if request.method == 'POST':
+        item_name = request.POST.get('item_name')
+        price = request.POST.get('price')
+        images = request.FILES.get('images')
+
+        item_obj.item_name = item_name
+        item_obj.price = price
+        if images:
+            item_obj.images = images
+        item_obj.save()
+        messages.success(request, "Item updated successfully.")
+        return redirect('owner_dashboard')
+    
+    return render(request, 'edit_item.html', {'item': item_obj})
+
+
+
+def food_items(request):
+    menu = item.objects.all()
+    return render(request, 'food_items.html', {'menu': menu})

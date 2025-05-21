@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block start %}
+<div class="container card shadow-lg mt-5">
+    <h2 class="text-center">Add Item</h2>
+    <form method="POST" action="{% url 'add_item' %}" enctype="multipart/form-data">
+    
+ 
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="item_name" class="form-label">Item Name</label>
+            <input type="text" class="form-control" id="item_name" name="item_name" required>
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Price</label>
+            <input type="number" class="form-control" id="price" name="price" required>
+        </div>
+        <div class="mb-3">
+            <label for="images" class="form-label">Image</label>
+            <input type="file" class="form-control" id="images" name="images" required>
+        </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <input type="text" class="form-control" id="category" name="category" required>
+        </div>
+    
+        <button type="submit" class="btn btn-primary">Add Item</button>
+    </form>
+    <a href="{% url 'food_items' %}" class="btn btn-secondary mt-3">Back to Food Items</a>
+</div>
+{% endblock %}
+ṣ

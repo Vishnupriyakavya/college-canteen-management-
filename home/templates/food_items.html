@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block start %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <h2>Food Items</h2>
+            <a href="{% url 'add_item' %}" class="btn btn-primary mt-3">
+                Add Item <i class="fa-solid fa-cart-shopping"></i>
+            </a>
+        </div>
+
+        {% for food_items in menu %}
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-lg">
+                 <img src="/media/{{food_items.images}}" class="card-img-top" alt="Food Item" style="height: 180px; object-fit: cover;">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-primary">{{ food_items.item_name }}</h5>
+                    <p class="text-muted">Price: ₹{{ food_items.price }}</p>
+                    <a href="{% url 'edit_item' food_items.uid %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'delete_item' food_items.uid %}" class="btn btn-danger btn-sm">Delete</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

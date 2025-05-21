@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block start %}
+<div class="container card shadow-lg mt-5">
+    <h2 class="text-center">Edit Item</h2>
+    <form method="POST" action="{% url 'edit_item' item.uid %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="item_name" class="form-label">Item Name</label>
+            <input type="text" class="form-control" id="item_name" name="item_name" value="{{ item.item_name }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="price" class="form-label">Price</label>
+            <input type="number" class="form-control" id="price" name="price" value="{{ item.price }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="images" class="form-label">Image</label>
+            <input type="file" class="form-control" id="images" name="images">
+        </div>
+        <button type="submit" class="btn btn-primary">Update Item</button>
+    </form>
+
+{% endblock %}
+
