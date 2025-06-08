@@ -1,7 +1,7 @@
 from django.contrib import admin #admin model defualt
-
-# Register your models here.
 from .models import *
+# Register your models here.
+
 
 admin.site.register(itemCategory)#adding itemCategory to admin to change(add,delete,update)
 admin.site.register(item)#item model

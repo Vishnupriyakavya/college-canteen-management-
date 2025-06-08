@@ -8,11 +8,11 @@
         {% csrf_token %}
         <div class="mb-3">
             <label for="item_name" class="form-label">Item Name</label>
-            <input type="text" class="form-control" id="item_name" name="item_name" required>
+            <input type="text" class="form-control" id="item_name" name="item_name" required placeholder="Enter food item name">
         </div>
         <div class="mb-3">
             <label for="price" class="form-label">Price</label>
-            <input type="number" class="form-control" id="price" name="price" required>
+            <input type="number" class="form-control" id="price" name="price" required placeholder="Enter food item price">
         </div>
         <div class="mb-3">
             <label for="images" class="form-label">Image</label>
@@ -20,7 +20,7 @@
         </div>
         <div class="mb-3">
             <label for="category" class="form-label">Category</label>
-            <input type="text" class="form-control" id="category" name="category" required>
+            <input type="text" class="form-control" id="category" name="category" required placeholder="Enter food category veg,egg,chicken">
         </div>
     
         <button type="submit" class="btn btn-primary">Add Item</button>

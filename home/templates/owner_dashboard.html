@@ -22,8 +22,13 @@
             padding: 20px;
             margin-bottom: 25px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+            transition: box-shadow 0.3s ease;
         }
 
+    .order-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
         .order-header {
             display: flex;
             justify-content: space-between;
@@ -80,6 +85,22 @@
             margin-bottom: 30px;
             color: #003366;
         }
+
+          .delete-btn {
+        position: absolute;
+        bottom: 3px;
+        right: 10px;
+        display: none;
+        background: transparent;
+        border: none;
+        font-size: 20px;
+        color: red;
+        cursor: pointer;
+    }
+
+        .order-card:hover .delete-btn {
+        display: block;
+    }
     </style>
 </head>
 <body>
@@ -90,13 +111,19 @@
     
         {% for order in orders %}
             <div class="order-card">
+                    <form method="POST" action="{% url 'delete_order' order.uid %}">
+        {% csrf_token %}
+        <button class="delete-btn" type="submit" title="Delete Order"  style="background-color:red; border-radius: 10%; border: #dc3545; color: #f5f7fa; ">DELETE</i></button>
+    </form>
                 <div class="order-header">
                     <div><strong>User:</strong> {{ order.user.username }}</div>
 {% if order.user.profile %}
-    <div><strong>Cabin No:</strong> {{ order.user.profile.cabin_no }}</div>
-    <div><strong>Floor No:</strong> {{ order.user.profile.floor_no }}</div>
-    <div><strong>Block:</strong> {{ order.user.profile.block_no }}</div>
-    <div><strong>Department:</strong> {{ order.user.profile.department }}</div>
+    <div><strong>Cabin No:</strong>  {{ order.user.profile.cabin_no }}</div>
+    <div><strong>Floor No:</strong>  {{ order.user.profile.floor_no }}</div>
+    <div><strong>Block:</strong>   {{ order.user.profile.block_no }}</div>
+    <div><strong>Department:</strong>  {{ order.user.profile.department }}</div>
+    <br>
+    <div><strong>Delivery Type: </strong>  {{ order.get_payment_method_display}}</div>
 {% else %}
     <div class="text-danger">Profile not found</div>
 {% endif %}

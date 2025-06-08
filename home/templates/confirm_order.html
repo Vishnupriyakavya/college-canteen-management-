@@ -1,0 +1,34 @@
+{% extends 'base.html'%}
+{%load static%}
+{%block start%}
+<h2>Confirm Your Order</h2>
+
+<ul>
+    {% for item in cart.Cart_item.all %}
+    <img src="{{item.food_items.images.url}}" 
+         style="height:100px;width:100px;" 
+         onerror="this.onerror=null;this.src='/static/default-image.jpg';">
+        <li>{{ item.food_items.item_name }} - Qty: {{ item.quantity }} - ₹{{ item.get_total_price }}</li>
+
+    {% endfor %}
+</ul>
+
+<p>Total: ₹{{ cart.get_cart_total }}</p>
+<span><p><strong>Delivery Address:</strong></p>
+<div class="card">
+    
+    
+    <p><strong>Name:</strong> {{ user.username }}</p>
+    <p><strong>cabin no:</strong>{{ user.profile.cabin_no }}, <strong>floor no</strong>{{ user.profile.floor_no }},<strong> Block: </strong>{{ user.profile.block_no }}</p>
+    <p><strong>Department:</strong> {{ user.profile.department }}</p>
+</div></span>
+<form method="post" action="{% url 'finalize_order' %}">
+    {% csrf_token %}
+    <label>Select Payment Method:</label><br>
+    <input type="radio" name="payment_method" value="cod" required> Cash on Delivery<br>
+    <input type="radio" name="payment_method" value="online" required> Online Payment<br><br>
+    <button type="submit" class="btn btn-success">Place Order</button>
+</form>
+
+
+{%endblock%}

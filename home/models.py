@@ -18,6 +18,8 @@ class BaseModel(models.Model):#abstract base class for common fields // models	A
 
 class itemCategory(BaseModel):#Represents a category of items 
     category_name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.category_name  #Returns the category name when the object is printed
 
 
 
@@ -38,8 +40,16 @@ class Cart(BaseModel):
         choices=[('pending', 'Pending'),('accepted', 'Accepted'),('completed', 'Completed')],
         default='pending'
     )
+    payment_method = models.CharField( 
+        max_length=20,
+        choices=[('cod', 'Cash on Delivery'), ('online', 'Online Payment')],
+        null=True,
+        blank=True
+    )
     def get_cart_total(self):
         return sum(item.get_total_price() for item in self.Cart_item.all())
+    def __str__(self):
+        return f"Cart {self.uid} - User: {self.user.username if self.user else 'Anonymous'} - Total: {self.get_cart_total()}"
 
 
 class CartItem(BaseModel):
@@ -48,6 +58,8 @@ class CartItem(BaseModel):
     quantity = models.PositiveIntegerField(default=1)
     def get_total_price(self):
         return self.food_items.price * self.quantity
+    def __str__(self):
+        return f"{self.food_items.item_name} - Quantity: {self.quantity} - Total: {self.get_total_price()} - User: {self.cart.user.username if self.cart.user else 'Anonymous'}"
     
 
 
