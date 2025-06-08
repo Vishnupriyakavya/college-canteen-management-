@@ -179,22 +179,6 @@ def owner_dashboard(request):
     context = {'orders': orders}
     return render(request, 'owner_dashboard.html', context)
 
-'''
-
-def update_order_status(request, order_uid):
-<<<<<<< HEAD
-=======
-    if request.method == 'POST':
-        try:
-            cart = Cart.objects.get(uid=order_uid)
-            new_status = request.POST.get('status')
-            if new_status in ['pending', 'completed']:
-                cart.status = new_status
-                cart.save()
-                messages.success(request, "Order status updated.")
-        except Cart.DoesNotExist:
-            messages.error(request, "Order not found.")
-    return redirect('owner_dashboard')'''
 
 @staff_member_required(login_url='/login/')
 def update_order_status(request, order_uid):
