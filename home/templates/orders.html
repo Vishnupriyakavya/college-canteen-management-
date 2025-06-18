@@ -1,98 +1,297 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Your Orders</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f9fafc;
-            font-family: 'Segoe UI', sans-serif;
-        }
+{% extends 'base.html'%}
+{%load static%}
 
-        .orders-container {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 20px;
-        }
+{%block start%}
 
-        .order-card {
-            background: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-            padding: 20px;
-            margin-bottom: 25px;
-            transition: transform 0.2s ease;
-        }
-
-        .order-card:hover {
-            transform: scale(1.01);
-        }
-
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-
-        .order-items {
-            padding-left: 20px;
-        }
-
-        .order-items li {
-            margin-bottom: 8px;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 10%;
-            color: #003366;
-        }
-
-        .back-btn {
-              position: absolute;
-    top: 20px;
-    left: 20px;
-    font-size: 0.9rem;
-    padding: 6px 12px;
-    border-radius: 5px;
-        }
-
-        .order-total {
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: #2a5d2a;
-        }
-    </style>
-</head>
-<body>
-    <div class="orders-container">
-        <h2>Your Orders</h2>
-  
-        <a href="{% url 'index' %}" class="btn btn-primary back-btn">Back to Home</a>
-
-        {% if orders %}
-            {% for order in orders %}
-                <div class="order-card">
-                    <div class="order-header">
-                        <div><strong>Order ID:</strong> {{ order.uid }}</div>
-                        <div><strong>Status:</strong> {{ order.status|title }}</div>
-                    </div>
-                    <p><strong>Ordered On:</strong> {{ order.created_at }}</p>
-                    <p><strong>Items:</strong></p>
-                    <ul class="order-items">
-                        {% for item in order.Cart_item.all %}
-                            <li>{{ item.food_items.item_name }} – Qty: {{ item.quantity }} – ₹{{ item.get_total_price }}</li>
-                        {% endfor %}
-                    </ul>
-                    <p class="order-total"><strong>Total:</strong> ₹{{ order.get_cart_total }}</p>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p class="text-center text-muted">You have no orders yet.</p>
-        {% endif %}
+<!-- Header Section -->
+<div class="container-fluid bg-primary text-white py-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-2">
+                    <i class="fas fa-shopping-bag me-3"></i>Your Orders
+                </h1>
+                <p class="lead mb-0">Track your order history and current orders</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="{% url 'home' %}" class="btn btn-outline-light">
+                    <i class="fas fa-home me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<div class="container my-5">
+    {% if orders %}
+        <!-- Orders Summary -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body text-center">
+                        <h4 class="text-primary mb-2">
+                            <i class="fas fa-chart-line me-2"></i>Order Summary
+                        </h4>
+                        <p class="text-muted mb-0">You have placed {{ orders.count }} order{{ orders.count|pluralize }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders List -->
+        {% for order in orders %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-white border-0 py-3">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h5 class="card-title mb-0 text-primary">
+                                    <i class="fas fa-receipt me-2"></i>Order #{{ order.uid|slice:":8" }}
+                                </h5>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    {{ order.created_at|date:"F j, Y" }} at {{ order.created_at|time:"g:i A" }}
+                                </small>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <span class="badge fs-6 px-3 py-2 status-badge status-{{ order.status }}">
+                                    <i class="fas fa-circle me-1"></i>{{ order.status|title }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <!-- Order Items -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="text-muted mb-3">
+                                    <i class="fas fa-utensils me-2"></i>Order Items
+                                </h6>
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="border-0">Item</th>
+                                                <th class="border-0 text-center">Quantity</th>
+                                                <th class="border-0 text-center">Price</th>
+                                                <th class="border-0 text-end">Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in order.cart_items.all %}
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-3">
+                                                            <img src="{{item.food_items.images.url}}" 
+                                                                 class="rounded" 
+                                                                 style="height:50px;width:50px;object-fit:cover;" 
+                                                                 onerror="this.onerror=null;this.src='/static/default-image.jpg';">
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="mb-1 fw-bold">{{ item.food_items.item_name }}</h6>
+                                                            <small class="text-muted">{{ item.food_items.category.category_name }}</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-primary">{{ item.quantity }}</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span class="text-muted">₹{{ item.food_items.price }}</span>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span class="fw-bold text-success">₹{{ item.get_total_price }}</span>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order Details -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-light border-0">
+                                    <div class="card-body">
+                                        <h6 class="text-muted mb-3">
+                                            <i class="fas fa-info-circle me-2"></i>Order Details
+                                        </h6>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Payment Method:</span>
+                                            <span class="fw-bold">
+                                                {% if order.payment_method == 'cod' %}
+                                                    <i class="fas fa-money-bill-wave text-success me-1"></i>Cash on Delivery
+                                                {% elif order.payment_method == 'online' %}
+                                                    <i class="fas fa-credit-card text-primary me-1"></i>Online Payment
+                                                {% else %}
+                                                    <span class="text-muted">Not specified</span>
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Order Date:</span>
+                                            <span class="fw-bold">{{ order.created_at|date:"M j, Y" }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Order Time:</span>
+                                            <span class="fw-bold">{{ order.created_at|time:"g:i A" }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card bg-primary text-white border-0">
+                                    <div class="card-body">
+                                        <h6 class="mb-3">
+                                            <i class="fas fa-calculator me-2"></i>Order Total
+                                        </h6>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Subtotal:</span>
+                                            <span>₹{{ order.get_cart_total|floatformat:2 }}</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Delivery Fee:</span>
+                                            <span class="text-success">FREE</span>
+                                        </div>
+                                        <hr class="my-3">
+                                        <div class="d-flex justify-content-between">
+                                            <h5 class="mb-0">Total Amount:</h5>
+                                            <h5 class="mb-0 fw-bold">₹{{ order.get_cart_total|floatformat:2 }}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        
+    {% else %}
+        <!-- Empty State -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-shopping-bag fa-4x text-muted"></i>
+                        </div>
+                        <h3 class="text-muted mb-3">No Orders Yet</h3>
+                        <p class="text-muted mb-4">You haven't placed any orders yet. Start shopping to see your order history here!</p>
+                        <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-utensils me-2"></i>Start Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Custom CSS for enhanced styling -->
+<style>
+    .status-badge {
+        font-weight: 500;
+        border-radius: 20px;
+    }
+    
+    .status-pending {
+        background: linear-gradient(135deg, #ffc107, #ff8f00) !important;
+        color: #000 !important;
+    }
+    
+    .status-accepted {
+        background: linear-gradient(135deg, #17a2b8, #138496) !important;
+        color: #fff !important;
+    }
+    
+    .status-completed {
+        background: linear-gradient(135deg, #28a745, #1e7e34) !important;
+        color: #fff !important;
+    }
+    
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+    }
+    
+    .table th {
+        font-weight: 600;
+        color: #495057;
+        border-top: none;
+    }
+    
+    .table td {
+        vertical-align: middle;
+        border-top: 1px solid #f8f9fa;
+    }
+    
+    .badge {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+    
+    .bg-primary {
+        background: linear-gradient(135deg, #007bff, #0056b3) !important;
+    }
+    
+    .text-primary {
+        color: #007bff !important;
+    }
+    
+    .shadow-lg {
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+    }
+    
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    
+    /* Animation for status badges */
+    .status-badge {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+        }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .display-5 {
+            font-size: 2rem;
+        }
+        
+        .card-header .row {
+            text-align: center;
+        }
+        
+        .col-md-6.text-end {
+            text-align: center !important;
+            margin-top: 1rem;
+        }
+    }
+</style>
+
+{%endblock%}

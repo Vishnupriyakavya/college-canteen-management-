@@ -1,87 +1,349 @@
 {% extends "base.html" %}
+{%load static%}
 
 {% block start %}
 
 
-<a href="{% url 'index' %}" class="btn btn-primary back-btn">Back to Home</a>
+<!-- Header Section -->
+<div class="container-fluid bg-primary text-white py-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 fw-bold mb-2">
+                    <i class="fas fa-shopping-cart me-3"></i>My Cart
+                </h1>
+                <p class="lead mb-0">Review and manage your order items</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="{% url 'home' %}" class="btn btn-outline-light">
+                    <i class="fas fa-home me-2"></i>Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="container my-5">
+    {% if cart and cart.cart_items.all %}
+        <!-- Cart Items Section -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-lg border-0 mb-4">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h3 class="card-title mb-0 text-primary">
+                            <i class="fas fa-list-alt me-2"></i>Cart Items ({{ cart.cart_items.count }})
+                        </h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="border-0">Item</th>
+                                        <th class="border-0 text-center">Quantity</th>
+                                        <th class="border-0 text-center">Price</th>
+                                        <th class="border-0 text-end">Total</th>
+                                        <th class="border-0 text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in cart.cart_items.all %}
+                                    <tr class="cart-item-row">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-3">
+                                                    <img src="{{ item.food_items.images.url }}" 
+                                                         class="rounded" 
+                                                         style="height:80px;width:80px;object-fit:cover;" 
+                                                         onerror="this.onerror=null;this.src='/static/default-image.jpg';">
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-1 fw-bold">{{ item.food_items.item_name }}</h6>
+                                                   
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="quantity-controls">
+                                                <button class="btn btn-outline-warning btn-sm quantity-btn" 
+                                                        onclick="updateQuantity('{{ item.uid }}', 'decrease', event)">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                                <span class="quantity-display mx-3 fw-bold">{{ item.quantity }}</span>
+                                                <button class="btn btn-outline-success btn-sm quantity-btn" 
+                                                        onclick="updateQuantity('{{ item.food_items.uid }}', 'increase', event)">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="text-muted">₹{{ item.food_items.price }}</span>
+                                        </td>
+                                        <td class="text-end">
+                                            <span class="fw-bold text-success">₹{{ item.get_total_price }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-outline-danger btn-sm" 
+                                                    onclick="removeItem('{{ item.uid }}')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h4 class="card-title mb-0 text-primary">
+                            <i class="fas fa-calculator me-2"></i>Order Summary
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Items ({{ cart.cart_items.count }}):</span>
+                            <span class="fw-bold">{{ cart.cart_items.count }} items</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Subtotal:</span>
+                            <span class="fw-bold">₹{{ cart.get_cart_total|floatformat:2 }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Delivery Fee:</span>
+                            <span class="text-success fw-bold">FREE</span>
+                        </div>
+                        <hr class="my-3">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="mb-0 text-primary">Total Amount:</h5>
+                            <h5 class="mb-0 text-primary fw-bold">₹{{ cart.get_cart_total|floatformat:2 }}</h5>
+                        </div>
+                        
+                        <div class="d-grid gap-3">
+                            <a href="{% url 'confirm_order' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-shopping-bag me-2"></i>Proceed to Checkout
+                            </a>
+                            <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-plus me-2"></i>Add More Items
+                            </a>
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Secure checkout process
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    {% else %}
+        <!-- Empty Cart State -->
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow-lg border-0">
+                    <div class="card-body text-center py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-shopping-cart fa-4x text-muted"></i>
+                        </div>
+                        <h3 class="text-muted mb-3">Your Cart is Empty</h3>
+                        <p class="text-muted mb-4">Looks like you haven't added any items to your cart yet. Start shopping to see your items here!</p>
+                        <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-utensils me-2"></i>Start Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Custom CSS for enhanced styling -->
+<style>
+    .cart-item-row {
+        transition: all 0.3s ease;
+    }
+    
+    .cart-item-row:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+    }
+    
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .quantity-btn {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .quantity-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    .quantity-display {
+        min-width: 30px;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+    
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+    }
+    
+    .table th {
+        font-weight: 600;
+        color: #495057;
+        border-top: none;
+    }
+    
+    .table td {
+        vertical-align: middle;
+        border-top: 1px solid #f8f9fa;
+    }
+    
+    .btn-lg {
+        padding: 12px 24px;
+        font-size: 1.1rem;
+        border-radius: 10px;
+    }
+    
+    .bg-primary {
+        background: linear-gradient(135deg, #007bff, #0056b3) !important;
+    }
+    
+    .text-primary {
+        color: #007bff !important;
+    }
+    
+    .shadow-lg {
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+    }
+    
+    /* Button hover effects */
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #0056b3, #004085);
+        border-color: #0056b3;
+        transform: translateY(-1px);
+    }
+    
+    .btn-outline-secondary:hover {
+        background: linear-gradient(135deg, #6c757d, #545b62);
+        border-color: #6c757d;
+        transform: translateY(-1px);
+    }
+    
+    /* Animation for quantity changes */
+    .quantity-display {
+        transition: all 0.3s ease;
+    }
+    
+    .quantity-display.updated {
+        animation: pulse 0.5s ease;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .display-5 {
+            font-size: 2rem;
+        }
+        
+        .quantity-controls {
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .table-responsive {
+            font-size: 0.9rem;
+        }
+        
+        .btn-lg {
+            font-size: 1rem;
+            padding: 10px 20px;
+        }
+    }
+</style>
+
+<!-- JavaScript for enhanced functionality -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll('.btn-success, .btn-warning').forEach(button => {
-            button.addEventListener('click', function () {
-                setTimeout(() => {
-                    location.reload();
-                }, 500);
-            });
+document.addEventListener('DOMContentLoaded', function() {
+    // Add loading states to buttons
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            if (!this.classList.contains('quantity-btn')) {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
+                this.disabled = true;
+            }
         });
     });
+});
+
+function updateQuantity(itemUid, action, event) {
+    const quantityDisplay = event.target.closest('.quantity-controls').querySelector('.quantity-display');
+    
+    // Add visual feedback
+    quantityDisplay.classList.add('updated');
+    
+    // Remove animation class after animation completes
+    setTimeout(() => {
+        quantityDisplay.classList.remove('updated');
+    }, 500);
+    
+    // Redirect to appropriate URL using Django URL names
+    if (action === 'increase') {
+        // For increasing quantity, we need the food item UID
+        window.location.href = '/add-cart/' + itemUid + '/';
+    } else if (action === 'decrease') {
+        // For decreasing quantity, we need the cart item UID
+        window.location.href = '/remove_cart_items/' + itemUid + '/';
+    }
+}
+
+function removeItem(itemUid) {
+    if (confirm('Are you sure you want to remove this item from your cart?')) {
+        window.location.href = '/remove_cart_items/' + itemUid + '/';
+    }
+}
+
+// Auto-refresh cart after quantity changes (legacy support)
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.btn-success, .btn-warning').forEach(button => {
+        button.addEventListener('click', function () {
+            setTimeout(() => {
+                location.reload();
+            }, 500);
+        });
+    });
+});
 </script>
 
-
-
-<div class="container card shadow-lg mt-5">
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">S.No</th>
-                
-                <th scope="col">Product</th>
-                <th scope="col">Item Name</th>
-               
-                <th scope="col">Quantity</th>
-                <th scope="col">Price</th>
-                <th scope="col">Total Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if carts and carts.Cart_item.all %}
-                {% for i in carts.Cart_item.all %}
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>
-                        <img src="{{ i.food_items.images.url }}" 
-                             style="height:100px;width:100px;" 
-                             onerror="this.onerror=null;this.src='/static/default-image.jpg';">
-                    </td>
-                    <td>{{ i.food_items.item_name }}</td>
-                    <td>
-                        <a href="{% url 'remove_cart_items' i.uid %}" class="btn btn-warning">-</a>
-                        <span class="mx-2">{{ i.quantity }}</span>
-                        <a href="{% url 'add_cart' i.food_items.uid %}" class="btn btn-success">+</a>
-                    </td>
-                    <td>₹{{ i.food_items.price }}</td>
-                    <td>₹{{ i.get_total_price }}</td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <td colspan="4" class="text-end">
-                        <b>Total</b>
-                    </td>
-                    <td>
-                     <div class="d-flex justify-content-between align-items-center">
-            <span>Pay ₹{{ carts.get_cart_total|floatformat:2 }}</span>
-            <form method="get" action="{% url 'confirm_order' %}" class="ms-3">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-success btn-sm">Place Order</button>
-            </form>
-        </div>
-    </td>
-</tr>
-
-
-
-            {% else %}
-                <!-- Empty Cart Message -->
-                <tr>
-                    <td colspan="6" class="text-center">
-                        <b>Your cart is empty!</b>
-                    </td>
-                </tr>
-            {% endif %}
-        </tbody>
-        
-    </table>
-</div>
 {% endblock %}

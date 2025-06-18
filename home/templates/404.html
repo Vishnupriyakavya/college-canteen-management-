@@ -1,0 +1,416 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block start %}
+<div class="error-container">
+    <!-- Error Header -->
+    <div class="error-header">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <div class="error-icon">
+                        <i class="fas fa-exclamation-triangle fa-5x"></i>
+                    </div>
+                    <h1 class="error-code">404</h1>
+                    <h2 class="error-title">Page Not Found</h2>
+                    <p class="error-description">
+                        Oops! The page you're looking for seems to have wandered off to the kitchen. 
+                        Maybe it's getting a snack? 🍕
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Content -->
+    <div class="error-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="error-card">
+                        <div class="error-suggestions">
+                            <h3 class="suggestions-title">
+                                <i class="fas fa-lightbulb me-2"></i>What you can do:
+                            </h3>
+                            <div class="suggestions-list">
+                                <div class="suggestion-item">
+                                    <i class="fas fa-home me-3"></i>
+                                    <div>
+                                        <h5>Go to Homepage</h5>
+                                        <p>Return to our main page and explore our delicious menu</p>
+                                    </div>
+                                </div>
+                                <div class="suggestion-item">
+                                    <i class="fas fa-search me-3"></i>
+                                    <div>
+                                        <h5>Check the URL</h5>
+                                        <p>Make sure the web address is spelled correctly</p>
+                                    </div>
+                                </div>
+                                <div class="suggestion-item">
+                                    <i class="fas fa-utensils me-3"></i>
+                                    <div>
+                                        <h5>Browse Our Menu</h5>
+                                        <p>Discover our tasty food items and place an order</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="error-actions">
+                            <a href="{% url 'index' %}" class="btn btn-primary btn-lg me-3">
+                                <i class="fas fa-home me-2"></i>Go Home
+                            </a>
+                            <a href="{% url 'home' %}" class="btn btn-warning btn-lg me-3">
+                                <i class="fas fa-utensils me-2"></i>View Menu
+                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'cart' %}" class="btn btn-success btn-lg">
+                                    <i class="fas fa-shopping-cart me-2"></i>My Cart
+                                </a>
+                            {% else %}
+                                <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fun Food Animation -->
+    <div class="food-animation">
+        <div class="floating-food food-1">🍕</div>
+        <div class="floating-food food-2">🍔</div>
+        <div class="floating-food food-3">🍟</div>
+        <div class="floating-food food-4">🥤</div>
+        <div class="floating-food food-5">🍰</div>
+    </div>
+</div>
+
+<!-- Custom CSS for 404 Page -->
+<style>
+    .error-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Error Header */
+    .error-header {
+        padding: 4rem 0 2rem;
+        color: white;
+        text-align: center;
+    }
+
+    .error-icon {
+        margin-bottom: 2rem;
+        animation: bounce 2s infinite;
+    }
+
+    .error-icon i {
+        color: #ffd93d;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .error-code {
+        font-size: 8rem;
+        font-weight: 900;
+        margin: 0;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        background: linear-gradient(45deg, #ffd93d, #ff6b6b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    .error-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .error-description {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-bottom: 0;
+        line-height: 1.6;
+    }
+
+    /* Error Content */
+    .error-content {
+        padding: 2rem 0 4rem;
+    }
+
+    .error-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Suggestions Section */
+    .suggestions-title {
+        color: var(--dark-color);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+    }
+
+    .suggestions-list {
+        margin-bottom: 2rem;
+    }
+
+    .suggestion-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .suggestion-item:hover {
+        background: #e9ecef;
+        transform: translateX(10px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .suggestion-item i {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        margin-top: 0.25rem;
+    }
+
+    .suggestion-item h5 {
+        color: var(--dark-color);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .suggestion-item p {
+        color: #6c757d;
+        margin-bottom: 0;
+        font-size: 0.95rem;
+    }
+
+    /* Error Actions */
+    .error-actions {
+        text-align: center;
+        padding-top: 1rem;
+        border-top: 2px solid #f8f9fa;
+    }
+
+    .error-actions .btn {
+        margin-bottom: 0.5rem;
+        border-radius: 15px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .error-actions .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Food Animation */
+    .food-animation {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .floating-food {
+        position: absolute;
+        font-size: 2rem;
+        animation: float 6s ease-in-out infinite;
+        opacity: 0.3;
+    }
+
+    .food-1 {
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .food-2 {
+        top: 30%;
+        right: 15%;
+        animation-delay: 1s;
+    }
+
+    .food-3 {
+        top: 60%;
+        left: 5%;
+        animation-delay: 2s;
+    }
+
+    .food-4 {
+        top: 70%;
+        right: 10%;
+        animation-delay: 3s;
+    }
+
+    .food-5 {
+        top: 40%;
+        left: 50%;
+        animation-delay: 4s;
+    }
+
+    /* Animations */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-20px);
+        }
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+
+    @keyframes glow {
+        from {
+            text-shadow: 0 0 20px rgba(255, 217, 61, 0.5);
+        }
+        to {
+            text-shadow: 0 0 30px rgba(255, 217, 61, 0.8), 0 0 40px rgba(255, 107, 107, 0.5);
+        }
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+        33% {
+            transform: translateY(-20px) rotate(10deg);
+        }
+        66% {
+            transform: translateY(-10px) rotate(-5deg);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .error-code {
+            font-size: 5rem;
+        }
+
+        .error-title {
+            font-size: 2rem;
+        }
+
+        .error-description {
+            font-size: 1rem;
+        }
+
+        .error-card {
+            padding: 1.5rem;
+            margin: 0 1rem;
+        }
+
+        .error-actions .btn {
+            display: block;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .suggestion-item {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .suggestion-item i {
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .error-header {
+            padding: 2rem 0 1rem;
+        }
+
+        .error-code {
+            font-size: 4rem;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+        }
+
+        .floating-food {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<!-- Enhanced JavaScript for 404 Page -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add entrance animation for error card
+    const errorCard = document.querySelector('.error-card');
+    if (errorCard) {
+        errorCard.style.opacity = '0';
+        errorCard.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            errorCard.style.transition = 'all 0.8s ease';
+            errorCard.style.opacity = '1';
+            errorCard.style.transform = 'translateY(0)';
+        }, 300);
+    }
+
+    // Add staggered animation for suggestion items
+    const suggestionItems = document.querySelectorAll('.suggestion-item');
+    suggestionItems.forEach((item, index) => {
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(-20px)';
+        
+        setTimeout(() => {
+            item.style.transition = 'all 0.6s ease';
+            item.style.opacity = '1';
+            item.style.transform = 'translateX(0)';
+        }, 600 + (index * 200));
+    });
+
+    // Add click effect to buttons
+    const buttons = document.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+        });
+    });
+
+    // Add parallax effect to floating food
+    window.addEventListener('mousemove', function(e) {
+        const foods = document.querySelectorAll('.floating-food');
+        const mouseX = e.clientX / window.innerWidth;
+        const mouseY = e.clientY / window.innerHeight;
+
+        foods.forEach((food, index) => {
+            const speed = (index + 1) * 0.5;
+            const x = (mouseX - 0.5) * speed * 20;
+            const y = (mouseY - 0.5) * speed * 20;
+            food.style.transform = `translate(${x}px, ${y}px)`;
+        });
+    });
+});
+</script>
+{% endblock %}

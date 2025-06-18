@@ -10,155 +10,556 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body {
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --success-color: #4facfe;
+            --warning-color: #43e97b;
+            --danger-color: #fa709a;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --white-color: #ffffff;
+            --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 5px 20px rgba(0, 0, 0, 0.15);
+            --shadow-heavy: 0 10px 30px rgba(0, 0, 0, 0.2);
+            --border-radius: 15px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: var(--dark-color);
+            line-height: 1.6;
         }
 
-        /* Navbar styling */
+        /* Enhanced Navbar Styling */
         .navbar-custom {
-            background: linear-gradient(135deg, #003366, #00509e);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-medium);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            transition: var(--transition);
         }
 
-        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white-color) !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+        }
+
+        .navbar-custom .navbar-brand:hover {
+            transform: scale(1.05);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
         .navbar-custom .nav-link {
-            color: white !important;
+            color: var(--white-color) !important;
             font-weight: 500;
-        }
-
-        .navbar-custom .btn {
-            font-size: 15px;
-        }
-
-        .btn-warning, .btn-primary {
-            font-weight: 500;
-        }
-
-        .badge {
-            font-size: 0.8rem;
-        }
-
-        /* Main content */
-        .content-container {
-            padding-top: 90px;
-            padding-bottom: 50px;
-        }
-
-        /* Footer */
-        .footer {
-            background: linear-gradient(135deg, #003366, #00509e);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 14px;
-        }
-
-        /* Hero styles (optional) */
-        .hero {
-            text-align: center;
-            padding: 100px 20px;
-            background-image: url('your-hero-image.jpg'); /* Optional */
-            background-size: cover;
-            background-position: center;
-            color: white;
+            padding: 0.5rem 1rem !important;
+            margin: 0 0.25rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
             position: relative;
+            overflow: hidden;
         }
 
-        .hero::before {
-            content: "";
+        .navbar-custom .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .navbar-custom .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .navbar-custom .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-light);
+        }
+
+        /* Enhanced Button Styling */
+        .btn {
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            padding: 0.5rem 1.5rem;
+            transition: var(--transition);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white-color);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            color: var(--dark-color);
+        }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #fecfef, #ff9a9e);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-light {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--dark-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-light:hover {
+            background: var(--white-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .btn-dark {
+            background: linear-gradient(135deg, var(--dark-color), #34495e);
+            color: var(--white-color);
+        }
+
+        .btn-dark:hover {
+            background: linear-gradient(135deg, #34495e, var(--dark-color));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Enhanced Badge Styling */
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.35rem 0.6rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-light);
+        }
+
+        .badge.bg-danger {
+            background: linear-gradient(135deg, var(--danger-color), #ff6b9d) !important;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Main Content Styling */
+        .content-container {
+            padding-top: 100px;
+            padding-bottom: 50px;
+            min-height: calc(100vh - 200px);
+        }
+
+        /* Enhanced Messages Styling */
+        .messages-container {
+            position: fixed;
+            top: 120px;
+            right: 20px;
+            z-index: 1050;
+            max-width: 400px;
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .alert {
+            border-radius: var(--border-radius);
+            border: none;
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 10px;
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        /* Enhanced Footer Styling */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white-color);
+            padding: 2rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 51, 102, 0.6);
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
         }
 
-        .hero h1, .hero p {
+        .footer-content {
             position: relative;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            z-index: 1;
         }
 
-        .hero h1 {
-            font-size: 42px;
-            margin-bottom: 10px;
+        /* Enhanced Responsive Design */
+        @media (max-width: 768px) {
+            .navbar-custom .navbar-brand {
+                font-size: 1.5rem;
+            }
+
+            .navbar-custom .nav-link {
+                padding: 0.75rem 1rem !important;
+                margin: 0.25rem 0;
+            }
+
+            .messages-container {
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+
+            .content-container {
+                padding-top: 80px;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
         }
 
-        .hero p {
-            font-size: 18px;
+        /* Enhanced Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        }
+
+        /* Enhanced Focus States */
+        .btn:focus,
+        .form-control:focus,
+        .nav-link:focus {
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            outline: none;
+        }
+
+        /* Enhanced Loading States */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Enhanced Card Styling */
+        .card {
+            border-radius: var(--border-radius);
+            border: none;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        /* Enhanced Table Styling */
+        .table {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+        }
+
+        .table th {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white-color);
+            font-weight: 600;
+            border: none;
+        }
+
+        /* Enhanced Form Styling */
+        .form-control {
+            border-radius: var(--border-radius);
+            border: 2px solid #e9ecef;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
         }
     </style>
 </head>
 
 <body>
-
-    <!-- Navbar -->
+    <!-- Enhanced Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
-    <div class="container-fluid px-4">
-        <a class="navbar-brand" href="/">🍽️ KHIT Canteen</a>
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-utensils me-2"></i>KHIT Canteen
+            </a>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu" aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
-            <ul class="navbar-nav">
-
-                {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account' %}">Account</a>
-                    </li>
-
-                    {% if user.is_staff %}
+            <div class="collapse navbar-collapse justify-content-end" id="navbarMenu">
+                <ul class="navbar-nav align-items-center">
+                    {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link btn btn-dark mx-2 text-white" href="{% url 'owner_dashboard' %}">
-                                Dashboard
+                            <a class="nav-link" href="{% url 'account' %}">
+                                <i class="fas fa-user-circle me-1"></i>Account
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'orders' %}">
+                                <i class="fas fa-list-alt me-1"></i>Orders
+                            </a>
+                        </li>
+
+                        {% if user.is_staff %}
+                            <li class="nav-item">
+                                <a class="nav-link btn btn-dark mx-2" href="{% url 'owner_dashboard' %}">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt me-1"></i>Logout
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="btn btn-light ms-2 position-relative" href="{% url 'cart' %}">
+                                <i class="fas fa-shopping-cart me-1"></i>
+                                <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">{{ cart_count }}</span>
+                            </a>
+                        </li>
+                        
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="btn btn-warning mx-2" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-warning mx-2" href="{% url 'register' %}">
+                                <i class="fas fa-user-plus me-1"></i>Register
                             </a>
                         </li>
                     {% endif %}
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-light ms-2" href="{% url 'cart' %}">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            <span class="badge bg-danger">{{ request.user.get_cart_count }}</span>
-                        </a>
-                    </li>
-                    
-                {% else %}
-                    <li class="nav-item">
-                        <a class="btn btn-warning mx-2" href="{% url 'login' %}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="btn btn-warning mx-2" href="{% url 'register' %}">Register</a>
-                    </li>
-                {% endif %}
-            </ul>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
-
-    <!-- Main Content -->
-    <main class="container content-container">
+    <!-- Enhanced Main Content -->
+    <main class="content-container">
+        <!-- Enhanced Messages Framework -->
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {% if message.tags == 'success' %}
+                            <i class="fas fa-check-circle me-2"></i>
+                        {% elif message.tags == 'error' %}
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                        {% elif message.tags == 'warning' %}
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                        {% elif message.tags == 'info' %}
+                            <i class="fas fa-info-circle me-2"></i>
+                        {% endif %}
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
         {% block start %}
         {% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="footer mt-auto">
-        © 2025 KHIT Canteen | All Rights Reserved
+    <!-- Enhanced Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6 text-md-start text-center">
+                        <h5 class="mb-2">
+                            <i class="fas fa-utensils me-2"></i>KHIT Canteen
+                        </h5>
+                        <p class="mb-0">Delicious food, made with love!</p>
+                    </div>
+                    <div class="col-md-6 text-md-end text-center">
+                        <p class="mb-0">
+                            <i class="fas fa-copyright me-1"></i>2025 KHIT Canteen | All Rights Reserved
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Enhanced JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add loading states to buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    if (!this.classList.contains('btn-close')) {
+                        this.classList.add('loading');
+                        setTimeout(() => {
+                            this.classList.remove('loading');
+                        }, 2000);
+                    }
+                });
+            });
+
+            // Auto-hide messages after 5 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    if (alert.parentElement) {
+                        alert.style.opacity = '0';
+                        setTimeout(() => {
+                            alert.remove();
+                        }, 300);
+                    }
+                }, 5000);
+            });
+
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Add navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar-custom');
+                if (window.scrollY > 50) {
+                    navbar.style.background = 'rgba(102, 126, 234, 0.95)';
+                    navbar.style.backdropFilter = 'blur(20px)';
+                } else {
+                    navbar.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                    navbar.style.backdropFilter = 'blur(10px)';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
