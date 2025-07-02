@@ -307,43 +307,53 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function updateQuantity(itemUid, action, event) {
-    const quantityDisplay = event.target.closest('.quantity-controls').querySelector('.quantity-display');
-    
-    // Add visual feedback
-    quantityDisplay.classList.add('updated');
-    
-    // Remove animation class after animation completes
-    setTimeout(() => {
-        quantityDisplay.classList.remove('updated');
-    }, 500);
-    
-    // Redirect to appropriate URL using Django URL names
+function updateQuantity(uid, action, event) {
+    event.preventDefault();
+    let url;
     if (action === 'increase') {
-        // For increasing quantity, we need the food item UID
-        window.location.href = '/add-cart/' + itemUid + '/';
+        url = `/add-cart/${uid}/`;
+        fetch(url, {
+            method: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        }).then(response => {
+            if (response.ok) window.location.reload();
+        });
     } else if (action === 'decrease') {
-        // For decreasing quantity, we need the cart item UID
-        window.location.href = '/remove_cart_items/' + itemUid + '/';
+        url = `/remove_cart_items/${uid}/`;
+         fetch(url, {
+            method: 'GET',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        }).then(response => {
+            if (response.ok) window.location.reload();
+        });
     }
 }
 
-function removeItem(itemUid) {
-    if (confirm('Are you sure you want to remove this item from your cart?')) {
-        window.location.href = '/remove_cart_items/' + itemUid + '/';
+function removeItem(uid) {
+    if (confirm('Are you sure you want to remove this item completely?')) {
+        let form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/remove_cart_items/${uid}/?delete=true`;
+        let csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = '{{ csrf_token }}';
+        form.appendChild(csrfInput);
+        document.body.appendChild(form);
+        form.submit();
     }
 }
 
 // Auto-refresh cart after quantity changes (legacy support)
-document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll('.btn-success, .btn-warning').forEach(button => {
-        button.addEventListener('click', function () {
-            setTimeout(() => {
-                location.reload();
-            }, 500);
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.btn-success, .btn-warning').forEach(button => {
+            button.addEventListener('click', function () {
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+            });
         });
     });
-});
 </script>
 
 {% endblock %}

@@ -2,19 +2,19 @@ from django.shortcuts import render, redirect, get_object_or_404
 from home.models import *
 from django.contrib.auth.models import User 
 from django.contrib.auth import login, authenticate   
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import logout
 from django.contrib import messages
 from django.http import JsonResponse
 from django.db.models import Max
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import Item, ItemCategory
-from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ValidationError
 from django.http import Http404
 import logging
 from datetime import date
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -68,6 +68,7 @@ def register_page(request):
         try:
             username = request.POST.get('username')
             password = request.POST.get('password')
+            phone_number = request.POST.get('phone_number')
             department = request.POST.get('department')
             cabin_no = request.POST.get('cabin_no')
             block_no = request.POST.get('block_no')
@@ -87,6 +88,7 @@ def register_page(request):
             user_obj.save()
             
             profile = Profile.objects.get(user=user_obj)
+            profile.phone_number = phone_number
             profile.department = department
             profile.cabin_no = cabin_no
             profile.floor_no = floor_no
@@ -143,13 +145,19 @@ def remove_cart_items(request, cart_item_uid):
 
         if cart_item.cart.user != request.user:
             messages.error(request, "You don't have permission to modify this cart.")
-            return redirect('cart') 
+            return redirect('cart')
 
-        if cart_item.quantity > 1:
+        # Check if the delete parameter is present
+        if 'delete' in request.GET:
+            item_name = cart_item.food_items.item_name
+            cart_item.delete()
+            messages.success(request, f"{item_name} has been removed from your cart.")
+        elif cart_item.quantity > 1:
             cart_item.quantity -= 1
             cart_item.save()
             messages.success(request, f"Quantity reduced for {cart_item.food_items.item_name}")
         else:
+            # If quantity is 1 and it's not a delete request, just remove it
             item_name = cart_item.food_items.item_name
             cart_item.delete()
             messages.success(request, f"{item_name} removed from cart")
@@ -281,7 +289,7 @@ def profile_view(request):
         return render(request, 'profile.html', {'profile': profile})
     except Exception as e:
         logger.error(f"Profile view error: {e}")
-        messages.error(request, "Error loading profile.")
+        
         return redirect('home')
 
 
@@ -290,21 +298,17 @@ def profile_view(request):
 def profile_edit(request):
     try:
         profile = request.user.profile
+        
         if request.method == 'POST':
-            department = request.POST.get('department')
-            cabin_no = request.POST.get('cabin_no')
-            floor_no = request.POST.get('floor_no')
-            block_no = request.POST.get('block_no')
-
-            profile.department = department
-            profile.cabin_no = cabin_no
-            profile.floor_no = floor_no
-            profile.block_no = block_no
+            profile.department = request.POST.get('department')
+            profile.cabin_no = request.POST.get('cabin_no')
+            profile.floor_no = request.POST.get('floor_no')
+            profile.block_no = request.POST.get('block_no')
+            profile.phone_number = request.POST.get('phone_number')
             profile.save()
-
-            messages.success(request, 'Profile updated successfully.')
+            messages.success(request, 'Profile updated successfully!')
             return redirect('profile')
-
+            
         return render(request, 'profile_edit.html', {'profile': profile})
     except Exception as e:
         logger.error(f"Profile edit error: {e}")

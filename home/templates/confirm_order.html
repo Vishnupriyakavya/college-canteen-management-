@@ -50,10 +50,10 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="me-3">
-                                                    <img src="{{item.food_items.images.url}}" 
+    <img src="{{item.food_items.images.url}}" 
                                                          class="rounded" 
                                                          style="height:60px;width:60px;object-fit:cover;" 
-                                                         onerror="this.onerror=null;this.src='/static/default-image.jpg';">
+         onerror="this.onerror=null;this.src='/static/default-image.jpg';">
                                                 </div>
                                                 <div>
                                                     <h6 class="mb-1 fw-bold">{{ item.food_items.item_name }}</h6>
@@ -71,7 +71,7 @@
                                             <span class="fw-bold text-success">₹{{ item.get_total_price }}</span>
                                         </td>
                                     </tr>
-                                    {% endfor %}
+    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -131,7 +131,7 @@
                 </div>
                 <div class="card-body">
                     <form method="post" action="{% url 'finalize_order' %}" id="paymentForm">
-                        {% csrf_token %}
+    {% csrf_token %}
                         
                         <div class="mb-3">
                             <div class="form-check payment-option mb-3">

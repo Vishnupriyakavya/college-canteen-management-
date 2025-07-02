@@ -125,6 +125,28 @@
                             </small>
                         </div>
 
+                        <!-- Phone Number Field -->
+                        <div class="form-group mb-4">
+                            <label class="form-label fw-bold text-primary">
+                                <i class="fas fa-phone me-2"></i>Phone Number
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-phone text-muted"></i>
+                                </span>
+                                <input type="text"
+                                       name="phone_number"
+                                       value="{{ profile.phone_number|default:'' }}"
+                                       class="form-control form-control-lg"
+                                       placeholder="Enter your phone number"
+                                       required>
+                            </div>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Your phone number for order updates
+                            </small>
+                        </div>
+
                         <!-- Form Actions -->
                         <div class="row mt-5">
                             <div class="col-md-6 mb-3">
