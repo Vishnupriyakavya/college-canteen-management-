@@ -159,16 +159,5 @@ Categories are managed through the Django admin interface:
 - Configure proper `ALLOWED_HOSTS`
 - Use environment variables for sensitive data
 - Set up proper database (PostgreSQL recommended)
-- Configure static file serving
-
-### Email Configuration
-To enable email notifications, add email settings to `.env`:
-
-```bash
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
-EMAIL_HOST_USER=your-email@gmail.com
-EMAIL_HOST_PASSWORD=your-app-password
-```
+- Configure static file server.
 
